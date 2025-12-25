@@ -1,0 +1,10 @@
+defaults:
+  - model: bert
+  - dataset: ag_news
+  - trainer: default
+  - _self_
+
+experiment:
+  name: hydra-mlflow-trainer
+  tracking_uri: sqlite:///mlflow.db
+  seed: 42

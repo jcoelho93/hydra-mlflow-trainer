@@ -1,0 +1,4 @@
+name: ag_news
+text_field: text
+label_field: label
+max_length: 128
