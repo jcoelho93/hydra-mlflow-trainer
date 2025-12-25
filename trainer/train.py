@@ -1,11 +1,14 @@
 import hydra
 from trainer.datasets.ag_news import load_ag_news
+from trainer.datasets.utils import tokenize_dataset
+from trainer.loop import Trainer
 from trainer.models.bert import build_model
 from omegaconf import DictConfig, OmegaConf
 import mlflow
 import random
 import torch
 import numpy as np
+from datasets import DatasetDict
 
 
 def set_seed(seed: int):
@@ -21,22 +24,23 @@ def main(cfg: DictConfig):
 
     set_seed(cfg.experiment.seed)
 
-    dataset = load_ag_news(cfg.dataset)
-    mlflow.log_param("train_size", len(dataset["train"]))
-
-    model = build_model(cfg.model)
-    mlflow.log_param("model_name", cfg.model.name)
-
     mlflow.set_tracking_uri(cfg.experiment.tracking_uri)
     mlflow.set_experiment(cfg.experiment.name)
 
     with mlflow.start_run():
         mlflow.log_params(OmegaConf.to_container(cfg, resolve=True))
 
-        # Placeholder for training logic
+        dataset: DatasetDict = load_ag_news(cfg.dataset, subset=True)
+        mlflow.log_param("train_size", len(dataset["train"]))
+        assert len(dataset["train"]) != 120000, f"Dataset not loaded correctly (size {len(dataset['train'])})"
 
-        mlflow.log_metric("sanity_check", 1.0)
+        tokenized_dataset = tokenize_dataset(cfg, dataset)
+        mlflow.log_param("dataset_tokenized", True)
 
+        model = build_model(cfg.model)
+        mlflow.log_param("model_name", cfg.model.name)
 
-if __name__ == "__main__":
-    main()
+        trainer = Trainer(model, tokenized_dataset, cfg)
+        trainer.train()
+
+        mlflow.pytorch.log_model(model, name="model")

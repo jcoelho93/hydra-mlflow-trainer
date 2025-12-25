@@ -1,0 +1,7 @@
+name: fancyzhx/ag_news
+text_field: text
+label_field: label
+max_length: 128
+
+train_subset_size: 500
+test_subset_size: 50

@@ -1,1 +1,5 @@
 outputs
+.checkpoints
+__pycache__
+mlflow.db
+mlruns

@@ -1,3 +1,4 @@
 epochs: 3
 batch_size: 16
 log_every: 10
+checkpoint_dir: .checkpoints
