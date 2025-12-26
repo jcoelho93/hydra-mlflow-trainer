@@ -76,15 +76,15 @@ class Trainer:
                 if batch_idx % self.cfg.trainer.log_every == 0:
                     print(f"Epoch {epoch + 1} | Batch {batch_idx} | Loss: {loss.item():.4f}")
                     step = epoch * len(self.train_loader) + batch_idx
-                    mlflow.log_metric("batch_loss", loss.item(), step=step, dataset=self.cfg.dataset.name)
+                    mlflow.log_metric("batch_loss", loss.item(), step=step)
 
             acc = accuracy_score(all_labels, all_preds)
             f1 = f1_score(all_labels, all_preds, average="weighted")
             print(f"Epoch {epoch} | Loss {total_loss:.4f} | Acc {acc:.4f} | F1 {f1:.4f}")
 
             epoch_loss = total_loss / len(self.train_loader)
-            mlflow.log_metric("epoch_loss", epoch_loss, step=epoch, dataset=self.cfg.dataset.name)
-            mlflow.log_metric("accuracy", acc, step=epoch, dataset=self.cfg.dataset.name)
-            mlflow.log_metric("f1_score", f1, step=epoch, dataset=self.cfg.dataset.name)
+            mlflow.log_metric("epoch_loss", epoch_loss, step=epoch)
+            mlflow.log_metric("accuracy", acc, step=epoch)
+            mlflow.log_metric("f1_score", f1, step=epoch)
 
             self._save_checkpoint(epoch)

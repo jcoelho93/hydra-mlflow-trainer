@@ -6,5 +6,5 @@ defaults:
 
 experiment:
   name: hydra-mlflow-trainer
-  tracking_uri: sqlite:///mlflow.db
+  tracking_uri: http://localhost:5000
   seed: 42
